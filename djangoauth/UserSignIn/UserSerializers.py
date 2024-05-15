@@ -1,13 +1,20 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-class UserSignInSerializer(serializers.Serializer):
-    mobileNumber = serializers.CharField(max_length = 10)
+class UserSignInSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
-        fields = ['id','email','username','password', 'mobileNumber']
+        fields = ['id','email','username','password']
 
-    def save(self,validated_data):
-        data = User.set_password(validated_data['password'])
-        data = User.objects.create(validated_data['email'],validated_data['username'],validated_data['mobileNumber'])
-        data.save()
+    def create(self,validated_data):
+        # email = validated_data['email']
+        # username = validated_data['username']
+        # mobileNumber = validated_data['mobileNumber']
+        password = validated_data['password']
+
+        # user = User.objects.create(email = email,username = username, password= password,mobileNumber=mobileNumber)
+        user = User.objects.create_user(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user

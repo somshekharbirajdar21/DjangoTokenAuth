@@ -8,6 +8,7 @@ from .UserSerializers import UserSignInSerializer
 def signInView(request):
     serializer = UserSignInSerializer(data = request.data)
     if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data)
     else:
         return Response(serializer.errors)
